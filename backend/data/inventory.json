@@ -1,0 +1,5 @@
+[
+  {"product": "Smartphone X", "region": "South", "stock": 100},
+  {"product": "Smartwatch Y", "region": "North", "stock": 50},
+  {"product": "Fitness Band Z", "region": "East", "stock": 0}
+]
