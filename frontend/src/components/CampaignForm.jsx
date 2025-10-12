@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { runCampaign } from "../api";
@@ -10,11 +6,9 @@ import { motion } from "framer-motion";
 export default function CampaignForm() {
   const [query, setQuery] = useState("");
   const [product, setProduct] = useState("");
-  const navigate = useNavigate();
-
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,138 +18,187 @@ export default function CampaignForm() {
       const results = await runCampaign(query, product);
       navigate("/agents", { state: { results, query, product } });
     } catch (err) {
-      console.error("Error in runCampaign:", err);
       setError("Failed to get results. Please try again.");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
-
   return (
-    <section id="campaign-form" style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "linear-gradient(135deg, #ff7eb9, #ff758c)",
-    }}>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7 }}
+    <section
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#12152e",
+        padding: "3rem 1rem",
+      }}
+    >
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
         style={{
-          background: "rgba(255,255,255,0.85)",
+          background: "rgba(255, 255, 255, 0.07)",
           borderRadius: "24px",
-          boxShadow: "0 8px 40px rgba(2, 6, 23, 0.18)",
-          padding: "2.5rem 2rem",
-          maxWidth: "420px",
+          padding: "3rem 3.5rem",
           width: "100%",
-          margin: "2rem 0"
+          maxWidth: 460,
+          backdropFilter: "blur(22px)",
+          boxShadow: "0 8px 48px rgba(124, 58, 237, 0.25)",
+          border: "1.5px solid rgba(124, 58, 237, 0.3)",
+          color: "#e1e6f9",
+          fontFamily: "'Inter', sans-serif",
+          userSelect: "none",
         }}
       >
-        <h2 style={{
-          fontSize: "2.2rem",
-          fontWeight: "bold",
-          marginBottom: "2rem",
-          textAlign: "center",
-          background: "linear-gradient(90deg, #00dbde, #fc00ff)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent"
-        }}>
-          Start Your Campaign
+        <h2
+          style={{
+            fontFamily: "'Lexend', 'Inter', sans-serif",
+            fontWeight: 900,
+            fontSize: "2.5rem",
+            marginBottom: "1.8rem",
+            background:
+              "linear-gradient(90deg, #7c3aed 0%, #06b6d4 80%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textAlign: "center",
+          }}
+        >
+          Plan Your Campaign
         </h2>
-        <form onSubmit={handleSubmit}>
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            style={{ marginBottom: "1.5rem" }}
-          >
-            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>Enter campaign request</label>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "1rem",
-                borderRadius: "12px",
-                border: "1px solid #e0e0e0",
-                fontSize: "1rem",
-                outline: "none",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
-              }}
-              required
-            />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ marginBottom: "1.5rem" }}
-          >
-            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600 }}>Enter product name</label>
-            <input
-              type="text"
-              value={product}
-              onChange={(e) => setProduct(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "1rem",
-                borderRadius: "12px",
-                border: "1px solid #e0e0e0",
-                fontSize: "1rem",
-                outline: "none",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
-              }}
-              required
-            />
-          </motion.div>
-          <motion.button
-            type="submit"
+
+        <div style={{ position: "relative", marginBottom: "2rem" }}>
+          <input
+            id="campaign-input"
+            type="text"
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            required
             style={{
               width: "100%",
-              padding: "1rem",
-              background: "linear-gradient(90deg, #00dbde, #fc00ff)",
+              padding: "1.2rem 1.4rem",
+              borderRadius: "14px",
+              border: "1.5px solid rgba(255,255,255,0.2)",
+              outline: "none",
+              background: "rgba(255, 255, 255, 0.08)",
               color: "#fff",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-              border: "none",
-              borderRadius: "12px",
-              cursor: loading ? "not-allowed" : "pointer",
-              boxShadow: "0 8px 30px rgba(0, 219, 222, 0.18)",
-              transition: "all 0.3s",
-              opacity: loading ? 0.7 : 1
+              fontSize: "1.15rem",
+              transition: "all 0.3s ease",
+              boxShadow: "inset 0 0 5px rgba(124, 58, 237, 0.4)",
             }}
-            disabled={loading}
-            whileHover={{ scale: loading ? 1 : 1.04 }}
-            whileTap={{ scale: loading ? 1 : 0.98 }}
+            onFocus={(e) =>
+              (e.target.style.border = "1.5px solid #7c3aed")}
+            onBlur={(e) =>
+              (e.target.style.border = "1.5px solid rgba(255,255,255,0.2)")}
+            placeholder=" "
+          />
+          <label
+            htmlFor="campaign-input"
+            style={{
+              position: "absolute",
+              top: 14,
+              left: 14,
+              fontSize: "0.9rem",
+              color: "rgba(255, 255, 255, 0.5)",
+              pointerEvents: "none",
+              transition: "all 0.3s ease",
+              fontWeight: 600,
+              userSelect: "none",
+            }}
           >
-            {loading ? (
-              <span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <motion.span
-                  initial={{ rotate: 0 }}
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1 }}
-                  style={{
-                    display: "inline-block",
-                    width: "22px",
-                    height: "22px",
-                    border: "3px solid #fff",
-                    borderTop: "3px solid #00dbde",
-                    borderRadius: "50%",
-                    marginRight: "8px"
-                  }}
-                />
-                Processing...
-              </span>
-            ) : "Submit"}
-          </motion.button>
-          {error && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ color: "#fc00ff", marginTop: "1rem", textAlign: "center" }}>{error}</motion.div>}
-        </form>
-      </motion.div>
+            Campaign request
+          </label>
+        </div>
+
+        <div style={{ position: "relative", marginBottom: "2.5rem" }}>
+          <input
+            id="product-input"
+            type="text"
+            value={product}
+            onChange={(e) => setProduct(e.target.value)}
+            required
+            style={{
+              width: "100%",
+              padding: "1.2rem 1.4rem",
+              borderRadius: "14px",
+              border: "1.5px solid rgba(255,255,255,0.2)",
+              outline: "none",
+              background: "rgba(255, 255, 255, 0.08)",
+              color: "#fff",
+              fontSize: "1.15rem",
+              transition: "all 0.3s ease",
+              boxShadow: "inset 0 0 5px rgba(6, 182, 212, 0.4)",
+            }}
+            onFocus={(e) =>
+              (e.target.style.border = "1.5px solid #06b6d4")}
+            onBlur={(e) =>
+              (e.target.style.border = "1.5px solid rgba(255,255,255,0.2)")}
+            placeholder=" "
+          />
+          <label
+            htmlFor="product-input"
+            style={{
+              position: "absolute",
+              top: 14,
+              left: 14,
+              fontSize: "0.9rem",
+              color: "rgba(255, 255, 255, 0.5)",
+              pointerEvents: "none",
+              transition: "all 0.3s ease",
+              fontWeight: 600,
+              userSelect: "none",
+            }}
+          >
+            Product name
+          </label>
+        </div>
+
+        <motion.button
+          type="submit"
+          style={{
+            padding: "1.2rem 2rem",
+            borderRadius: "28px",
+            fontWeight: "700",
+            fontSize: "1.2rem",
+            color: "#fff",
+            border: "none",
+            cursor: loading ? "not-allowed" : "pointer",
+            background:
+              loading
+                ? "linear-gradient(90deg,#7c3aed99,#06b6d499)"
+                : "linear-gradient(90deg,#7c3aed,#06b6d4)",
+            boxShadow: loading
+              ? "0 0 12px #7c3aed99, 0 0 24px #06b6d499"
+              : "0 0 24px #7c3aed, 0 0 48px #06b6d4",
+            transition: "all 0.3s ease",
+            userSelect: "none",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+          whileHover={{ scale: loading ? 1 : 1.05, boxShadow: "0 0 32px #7c3aed" }}
+          whileTap={{ scale: loading ? 1 : 0.95 }}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Submit"}
+        </motion.button>
+
+        {error && (
+          <div
+            style={{
+              marginTop: "1rem",
+              fontWeight: "600",
+              color: "#ff6584",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </div>
+        )}
+      </motion.form>
     </section>
   );
 }

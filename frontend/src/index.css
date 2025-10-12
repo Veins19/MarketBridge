@@ -1,28 +1,73 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Lexend:wght@700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --bg-color: #12152e;
+  --header-bg: rgba(18, 21, 46, 0.74);
+  --card-bg: rgba(40, 44, 82, 0.92);
+  --glass-bg: rgba(255,255,255,0.07);
+  --text-color: #e1e6f9;
+  --muted: #e0eaff;
+  --accent1: #7c3aed;
+  --accent2: #06b6d4;
+  --danger: #ff61a6;
+  --button-bg: linear-gradient(90deg, #7c3aed, #06b6d4);
+  --button-text: #fff;
+  --shadow-glow: 0 0 24px #7c3aed88;
+  --border: 1.5px solid rgba(120, 140, 209, 0.18);
+  --radius: 20px;
+  --blur: blur(14px);
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #1f1c2c, #928dab);
-  color: white;
-  overflow-x: hidden;
+[data-theme="light"] {
+  --bg-color: #f7fafc;
+  --header-bg: rgba(255,255,255,0.91);
+  --card-bg: #fff;
+  --glass-bg: rgba(255,255,255, 0.94);
+  --text-color: #222646;
+  --muted: #6b7280;
+  --accent1: #7c3aed;
+  --accent2: #06b6d4;
+  --danger: #e11d48;
+  --button-bg: linear-gradient(90deg,#a78bfa,#22d3ee);
+  --button-text: #202245;
+  --shadow-glow: 0 0 24px #a78bfa88;
+  --border: 1.5px solid rgba(180, 180, 240, 0.15);
+  --radius: 20px;
+  --blur: blur(10px);
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', 'Lexend', Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.4s, color 0.4s;
 }
 
 .app {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+/* Glass/Neumorphism */
+.glass {
+  background: var(--glass-bg);
+  box-shadow: var(--shadow-glow);
+  border: var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: var(--blur);
+}
+
+/* Utility */
+input, button, textarea {
+  font-family: inherit;
+  border-radius: var(--radius);
+  outline: none;
+}
+
+/* Responsive utility */
+@media (max-width: 800px) {
+  .page, .agents, .hero { padding: 1.2rem !important; }
 }
