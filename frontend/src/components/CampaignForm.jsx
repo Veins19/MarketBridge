@@ -103,23 +103,20 @@ export default function CampaignForm() {
         </div>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress Bar - Clean Version */}
 <div className="progress-section">
-  <div className="container">
-    <div className="progress-container">
-      <div className="progress-bar">
-        {[1, 2, 3].map((step) => (
-          <div key={step} className={`progress-step ${currentStep >= step ? 'active' : ''}`}>
-            <div className="step-circle">{step}</div>
-            <span className="step-label">
-              {step === 1 ? 'Campaign Type' : step === 2 ? 'Details' : 'Review & Submit'}
-            </span>
-          </div>
-        ))}
+  <div className="progress-bar">
+    {[1, 2, 3].map((step) => (
+      <div key={step} className={`progress-step ${currentStep >= step ? 'active' : ''}`}>
+        <div className="step-circle">{step}</div>
+        <span className="step-label">
+          {step === 1 ? 'Campaign Type' : step === 2 ? 'Details' : 'Review & Submit'}
+        </span>
       </div>
-    </div>
+    ))}
   </div>
 </div>
+
 
 
       {/* Main Form */}
@@ -153,19 +150,34 @@ export default function CampaignForm() {
                   ))}
                 </div>
                 
-                <div className="custom-query-section">
-                  <label htmlFor="custom-query" className="form-label">
-                    Or describe your custom campaign:
-                  </label>
-                  <textarea
-                    id="custom-query"
-                    className="form-textarea"
-                    placeholder="Describe your marketing campaign goals, target audience, and key objectives..."
-                    value={formData.query}
-                    onChange={(e) => handleInputChange('query', e.target.value)}
-                    rows={4}
-                  />
-                </div>
+                {/* Divider */}
+<div className="custom-query-divider">
+  Or create something unique
+</div>
+
+{/* Custom Query Section */}
+<div className="custom-query-section">
+  <div className="custom-query-header">
+    <label htmlFor="custom-query" className="form-label custom-label">
+      <span className="custom-icon">✨</span>
+      Describe Your Custom Campaign
+    </label>
+  </div>
+  
+  <textarea
+    id="custom-query"
+    className="form-textarea custom-textarea"
+    placeholder="Tell us about your unique marketing vision... What are your goals? Who is your audience? What makes your campaign special?"
+    value={formData.query}
+    onChange={(e) => handleInputChange('query', e.target.value)}
+    rows={3}
+  />
+  
+  <p className="custom-help-text">
+    💡 Be specific about your objectives, target market, and desired outcomes for better AI recommendations
+  </p>
+</div>
+
               </div>
             )}
 
