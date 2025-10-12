@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from agent_manager import run_agents
 from fastapi.middleware.cors import CORSMiddleware
+from agent_manager import run_agents
 
 app = FastAPI()
 
