@@ -1,126 +1,303 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import "./Hero.css";
+const FloatingElements = () => (
+  <div className="floating-elements">
+    <motion.div
+      className="floating-element element-1"
+      animate={{ y: [-20, 20, -20], rotate: [0, 180, 360] }}
+      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+    >
+      🎨
+    </motion.div>
+    <motion.div
+      className="floating-element element-2"
+      animate={{ y: [20, -20, 20], rotate: [360, 180, 0] }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+    >
+      💰
+    </motion.div>
+    <motion.div
+      className="floating-element element-3"
+      animate={{ y: [-15, 15, -15], rotate: [0, -180, -360] }}
+      transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+    >
+      📦
+    </motion.div>
+  </div>
+);
 
-const BlobBackground = () => (
-  <svg
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      zIndex: -1,
-      filter: "blur(70px)",
-      opacity: 0.3,
-      transform: "translate3d(0, 0, 0)"
-    }}
-    viewBox="0 0 600 600"
-    xmlns="http://www.w3.org/2000/svg"
+const FeatureCard = ({ icon, title, description, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay }}
+    className="feature-card"
   >
-    <motion.path
-      fill="url(#gradient)"
-      animate={{
-        d: [
-          "M421.7,316Q379,382,316.5,415Q254,448,184.5,419.5Q115,391,83,331.5Q51,272,81.5,215Q112,158,179.5,114.5Q247,71,310,109Q373,147,423,195Q473,243,421.7,316Z",
-          "M411,302.5Q353,365,298,387Q243,409,196,377.5Q149,346,122,292.5Q95,239,123.5,188.5Q152,138,207.5,111Q263,84,322,95Q381,106,413,158Q445,210,411,302.5Z",
-          "M404,306Q356,362,298.5,389.5Q241,417,183.5,375Q126,333,119,268.5Q112,204,163,154.5Q214,105,273,90Q332,75,393,120Q454,165,404,306Z",
-          "M421.7,316Q379,382,316.5,415Q254,448,184.5,419.5Q115,391,83,331.5Q51,272,81.5,215Q112,158,179.5,114.5Q247,71,310,109Q373,147,423,195Q473,243,421.7,316Z"
-        ]
-      }}
-      transition={{ repeat: Infinity, duration: 20, ease: "easeInOut" }}
-    />
-    <defs>
-      <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#7c3aed" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-    </defs>
-  </svg>
+    <div className="feature-icon">{icon}</div>
+    <h3 className="feature-title">{title}</h3>
+    <p className="feature-description">{description}</p>
+  </motion.div>
+);
+
+const StatItem = ({ value, label, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.5, delay }}
+    className="stat-item"
+  >
+    <div className="stat-value">{value}</div>
+    <div className="stat-label">{label}</div>
+  </motion.div>
+);
+
+const AgentPreview = ({ agent, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, x: -50 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.6, delay }}
+    className="agent-preview"
+    whileHover={{ scale: 1.05 }}
+  >
+    <div className="agent-avatar" style={{ background: agent.gradient }}>
+      {agent.icon}
+    </div>
+    <div className="agent-info">
+      <h4 className="agent-name">{agent.name}</h4>
+      <p className="agent-role">{agent.role}</p>
+    </div>
+    
+  </motion.div>
 );
 
 export default function Hero() {
   const navigate = useNavigate();
 
-  return (
-    <section
-      style={{
-        position: "relative",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "3rem 1rem",
-        overflow: "hidden",
-        backgroundColor: "#12152e"
-      }}
-    >
-      <BlobBackground />
-      <motion.h1
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        style={{
-          fontFamily: "'Lexend', 'Inter', sans-serif",
-          fontWeight: 900,
-          fontSize: "3.8rem",
-          maxWidth: "700px",
-          textAlign: "center",
-          marginBottom: "1rem",
-          background:
-            "linear-gradient(90deg, #7c3aed 0%, #06b6d4 50%, #ff61a6 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          userSelect: "none",
-          lineHeight: 1.1,
-          letterSpacing: "-0.03em",
-          textShadow: "0px 2px 12px rgba(124, 58, 237, 0.6)"
-        }}
-      >
-        Design Campaigns Faster. Smarter. Futuristic.
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 1 }}
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          fontWeight: 400,
-          fontSize: "1.1rem",
-          maxWidth: "460px",
-          marginBottom: "2.5rem",
-          color: "rgba(200, 210, 240, 0.8)",
-          textAlign: "center",
-          userSelect: "none"
-        }}
-      >
-        Empower your marketing, finance, and inventory planning with
-        AI-driven agent collaboration.
-      </motion.p>
+  const features = [
+    {
+      icon: "🤖",
+      title: "AI-Powered Agents",
+      description: "Three specialized AI agents working in harmony to create optimal marketing strategies."
+    },
+    {
+      icon: "⚡",
+      title: "Lightning Fast",
+      description: "Get comprehensive campaign analysis and recommendations in seconds, not hours."
+    },
+    {
+      icon: "🎯",
+      title: "Precision Targeting",
+      description: "Advanced customer segmentation and targeting for maximum campaign effectiveness."
+    },
+    
+  ];
 
-      <motion.button
-        onClick={() => navigate("/campaign")}
-        whileHover={{ scale: 1.06, boxShadow: "0 0 16px #7c3aed" }}
-        whileTap={{ scale: 0.96 }}
-        style={{
-          padding: "1.2rem 3.2rem",
-          fontSize: "1.15rem",
-          fontWeight: "700",
-          color: "#fff",
-          borderRadius: "28px",
-          border: "none",
-          cursor: "pointer",
-          background:
-            "linear-gradient(90deg, #7c3aed, #06b6d4, #ff61a6)",
-          boxShadow:
-            "0 0 10px rgba(124, 58, 237, 0.8), 0 0 30px rgba(6, 182, 212, 0.8), 0 0 40px #ff61a6",
-          userSelect: "none",
-          transition: "all 0.3s ease"
-        }}
-      >
-        Get Started
-      </motion.button>
-    </section>
+  const stats = [
+    { value: "150+", label: "Campaigns Created" },
+    { value: "94%", label: "Success Rate" },
+    { value: "$2.5M+", label: "Budget Managed" },
+    { value: "10K+", label: "Products Tracked" }
+  ];
+
+  const agents = [
+    {
+      name: "Creative Agent",
+      role: "Campaign Strategy",
+      icon: "🎨",
+      gradient: "linear-gradient(135deg, #7c3aed, #a855f7)"
+    },
+    {
+      name: "Finance Agent",
+      role: "Budget Analysis",
+      icon: "💰",
+      gradient: "linear-gradient(135deg, #06b6d4, #0891b2)"
+    },
+    {
+      name: "Inventory Agent",
+      role: "Stock Management",
+      icon: "📦",
+      gradient: "linear-gradient(135deg, #10b981, #059669)"
+    }
+  ];
+
+  return (
+    <div className="hero-page">
+      {/* Hero Section */}
+      <section className="hero-main">
+        <FloatingElements />
+        
+        <div className="container">
+          <div className="hero-content">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="hero-text"
+            >
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="hero-badge"
+              >
+                ✨ Powered by Advanced AI Technology
+              </motion.div>
+              
+              <h1 className="hero-title">
+                Transform Your Marketing with
+                <span className="gradient-text"> AI-Powered Agents</span>
+              </h1>
+              
+              <p className="hero-subtitle">
+                Experience the future of marketing with our intelligent agent collaboration system. 
+                Get data-driven campaigns, budget optimization, and inventory insights in one powerful platform.
+              </p>
+
+              <div className="hero-actions">
+                <motion.button
+                  onClick={() => navigate("/campaign")}
+                  className="cta-primary"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="cta-icon">🚀</span>
+                  Start Creating Campaign
+                </motion.button>
+                
+                <motion.button
+                  onClick={() => navigate("/agents")}
+                  className="cta-secondary"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="cta-icon">👥</span>
+                  Meet Our Agents
+                </motion.button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="hero-visual"
+            >
+              <div className="visual-container">
+                <div className="central-hub">
+                  <div className="hub-core">
+                    <span className="hub-icon">🎯</span>
+                    <span className="hub-text">MarketBridge</span>
+                  </div>
+                </div>
+                
+                <div className="agent-nodes">
+                  {agents.map((agent, index) => (
+                    <motion.div
+                      key={agent.name}
+                      className={`agent-node node-${index + 1}`}
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    >
+                      <div className="node-content" style={{ background: agent.gradient }}>
+                        {agent.icon}
+                      </div>
+                      <div className="connection-line"></div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="section-header"
+          >
+            <h2 className="section-title">Why Choose MarketBridge?</h2>
+            <p className="section-subtitle">
+              Powerful features designed to revolutionize your marketing workflow
+            </p>
+          </motion.div>
+
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <FeatureCard key={feature.title} {...feature} delay={index * 0.2} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Agents Preview Section */}
+      <section className="agents-preview-section">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="section-header"
+          >
+            <h2 className="section-title">Meet Your AI Marketing Team</h2>
+            <p className="section-subtitle">
+              Three specialized agents working together to maximize your campaign success
+            </p>
+          </motion.div>
+
+          <div className="agents-preview-grid">
+            {agents.map((agent, index) => (
+              <AgentPreview key={agent.name} agent={agent} delay={index * 0.2} />
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="agents-cta"
+          >
+            <button 
+              onClick={() => navigate("/agents")}
+              className="agents-cta-btn"
+            >
+              Explore All Agents →
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="final-cta-section">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="cta-card"
+          >
+            <h2 className="cta-title">Ready to Transform Your Marketing?</h2>
+            <p className="cta-description">
+              Join thousands of marketers who trust MarketBridge to create winning campaigns
+            </p>
+            <motion.button
+              onClick={() => navigate("/campaign")}
+              className="final-cta-btn"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="cta-icon">✨</span>
+              Get Started Now
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
 }

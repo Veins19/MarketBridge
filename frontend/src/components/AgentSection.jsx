@@ -1,182 +1,196 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
-import AgentCollaborationTimeline from "./AgentCollaborationTimeline.jsx";
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import AgentCard from './AgentCard';
+import AgentCollaborationTimeline from './AgentCollaborationTimeline';
+import './AgentSection.css';
 
-
-const agents = [
-  {
-    key: "Creative",
-    label: "Creative Agent",
-    gradient: "linear-gradient(135deg, #ff61a6 0%, #7c3aed 100%)",
-    avatar: "🎨",
-  },
-  {
-    key: "Finance",
-    label: "Finance Agent",
-    gradient: "linear-gradient(135deg, #06b6d4 0%, #00f2fe 100%)",
-    avatar: "💰",
-  },
-  {
-    key: "Inventory",
-    label: "Inventory Agent",
-    gradient: "linear-gradient(135deg, #1de9b6 0%, #60efff 100%)",
-    avatar: "📦",
-  },
-];
-
-export default function AgentSection() {
+const AgentSection = () => {
   const location = useLocation();
-  const results = location.state?.results;
-  const query = location.state?.query;
-  const product = location.state?.product;
+  const [campaignResults, setCampaignResults] = useState(null);
+  const [campaignQuery, setCampaignQuery] = useState('');
+  const [campaignProduct, setCampaignProduct] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Get campaign results from navigation state (when coming from CampaignForm)
+  useEffect(() => {
+    if (location.state?.results) {
+      setCampaignResults(location.state.results);
+      setCampaignQuery(location.state.query || '');
+      setCampaignProduct(location.state.product || '');
+      setIsProcessing(false);
+    }
+  }, [location.state]);
+
+  const agents = [
+    {
+      id: 'creative',
+      name: 'Creative Agent',
+      role: 'Campaign Strategy',
+      description: 'Generates innovative marketing campaigns with targeted discount strategies and customer segmentation.',
+      capabilities: [
+        'Campaign ideation and strategy',
+        'Customer segmentation analysis',
+        'Discount and promotion planning',
+        'Creative content suggestions',
+        'Market trend analysis'
+      ],
+      icon: '🎨',
+      color: '#7c3aed',
+      stats: {
+        'Campaigns Created': '150+',
+        'Success Rate': '94%',
+        'Avg. ROI': '340%'
+      },
+      result: campaignResults?.Creative
+    },
+    {
+      id: 'finance',
+      name: 'Finance Agent',
+      role: 'Budget Validation',
+      description: 'Validates campaign budgets against available funds and ensures financial feasibility of marketing initiatives.',
+      capabilities: [
+        'Budget analysis and validation',
+        'Cost-effectiveness evaluation',
+        'Financial risk assessment',
+        'ROI projections',
+        'Spending optimization'
+      ],
+      icon: '💰',
+      color: '#06b6d4',
+      stats: {
+        'Budget Approved': '$2.5M+',
+        'Cost Savings': '23%',
+        'Accuracy Rate': '99.8%'
+      },
+      result: campaignResults?.Finance
+    },
+    {
+      id: 'inventory',
+      name: 'Inventory Agent',
+      role: 'Stock Management',
+      description: 'Monitors product availability across regions and ensures campaigns align with inventory levels.',
+      capabilities: [
+        'Real-time inventory tracking',
+        'Regional availability analysis',
+        'Stock level optimization',
+        'Demand forecasting',
+        'Supply chain coordination'
+      ],
+      icon: '📦',
+      color: '#10b981',
+      stats: {
+        'Products Tracked': '10,000+',
+        'Regions Covered': '25',
+        'Accuracy': '98.5%'
+      },
+      result: campaignResults?.Inventory
+    }
+  ];
 
   return (
-    <section
-      style={{
-        minHeight: "100vh",
-        padding: "3rem 2rem",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: "#12152e",
-        position: "relative",
-      }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        style={{
-          background: "rgba(255, 255, 255, 0.07)",
-          borderRadius: "24px",
-          padding: "2.5rem 2rem",
-          maxWidth: 900,
-          width: "100%",
-          boxShadow: "0 6px 40px rgba(124, 58, 237, 0.2)",
-          backdropFilter: "blur(18px)",
-          border: "1.5px solid rgba(124, 58, 237, 0.3)",
-          color: "#ddd",
-          marginBottom: "2rem",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontWeight: 900,
-            fontSize: "2.2rem",
-            fontFamily: "'Lexend', 'Inter', sans-serif",
-            background:
-              "linear-gradient(90deg, #ff61a6, #7c3aed, #06b6d4)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            marginBottom: "0.8rem",
-          }}
-        >
-          AI Agent Collaboration Results
-        </h2>
-        <div style={{ fontSize: "1.1rem", color: "#bbb" }}>
-          Campaign: <strong style={{ color: "#ff61a6" }}>{query || "N/A"}</strong> | Product:{" "}
-          <strong style={{ color: "#06b6d4" }}>{product || "N/A"}</strong>
-        </div>
-      </motion.div>
-
-      <div
-        style={{
-          display: "flex",
-          gap: "2rem",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          maxWidth: 920,
-          width: "100%",
-        }}
-      >
-        {agents.map((agent, i) => (
-          <motion.div
-            key={agent.key}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.15, duration: 0.8 }}
-            style={{
-              flex: "1 1 280px",
-              background: agent.gradient,
-              borderRadius: "20px",
-              color: "#fff",
-              padding: "2rem",
-              boxShadow: `0 0 20px 1px ${agent.gradient
-                .replace("linear-gradient(135deg,", "")
-                .replace("0%,", "")
-                .replace("100%)", "")}`,
-              border: "1.5px solid rgba(255, 255, 255, 0.1)",
-              cursor: "default",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              userSelect: "none",
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "3rem",
-                marginBottom: "1rem",
-                filter:
-                  "drop-shadow(0 0 8px rgba(0,0,0,0.15)) drop-shadow(0 0 10px #fff)",
-              }}
-              aria-label={`${agent.label} icon`}
-            >
-              {agent.avatar}
-            </div>
-            <h3
-              style={{
-                fontFamily: "'Lexend', 'Inter', sans-serif",
-                fontWeight: 700,
-                fontSize: "1.6rem",
-                marginBottom: "1rem",
-                textShadow: "0 2px 6px rgba(0,0,0,0.25)",
-              }}
-            >
-              {agent.label}
-            </h3>
-            <p
-              style={{
-                minHeight: "72px",
-                fontSize: "1rem",
-                color: "#e0e7ffdd",
-                textAlign: "center",
-                lineHeight: "1.3",
-              }}
-            >
-              {results ? results[agent.key] : "Agent awaiting input..."}
+    <div className="agents-page">
+      {/* Hero Section */}
+      <section className="agents-hero">
+        <div className="container">
+          <div className="hero-content">
+            <h1 className="hero-title">
+              {campaignResults ? 'Campaign Results Ready!' : 'Meet Your AI Marketing Team'}
+            </h1>
+            <p className="hero-subtitle">
+              {campaignResults 
+                ? `Campaign analysis completed for "${campaignQuery}" targeting "${campaignProduct}"` 
+                : 'Three specialized agents working together to create, validate, and execute your marketing campaigns with precision and intelligence.'
+              }
             </p>
-          </motion.div>
-        ))}
-      </div>
-<AgentCollaborationTimeline results={results} />
+          </div>
+        </div>
+      </section>
 
-      {results?.["Final Plan"] && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          style={{
-            marginTop: "3rem",
-            padding: "1.6rem 2rem",
-            maxWidth: 900,
-            background:
-              "linear-gradient(135deg, #7c3aedcc, #06b6d4cc)",
-            borderRadius: "20px",
-            boxShadow: "0 6px 24px rgba(124, 58, 237, 0.35)",
-            color: "#fff",
-            fontWeight: 700,
-            fontSize: "1.25rem",
-            userSelect: "none",
-            textAlign: "center",
-          }}
-        >
-          Final Plan: {results["Final Plan"]}
-        </motion.div>
+      {/* Campaign Results Section */}
+      {campaignResults && (
+        <section className="campaign-results-section">
+          <div className="container">
+            <div className="results-header">
+              <h2>Campaign Analysis Results</h2>
+              <div className="campaign-meta">
+                <span className="meta-item">Query: <strong>{campaignQuery}</strong></span>
+                <span className="meta-item">Product: <strong>{campaignProduct}</strong></span>
+                <span className="meta-item">Status: <span className="status-success">✓ Complete</span></span>
+              </div>
+            </div>
+
+            {/* Final Plan Card */}
+            <div className="final-plan-card">
+              <h3>🎯 Final Marketing Plan</h3>
+              <p className="final-plan-text">{campaignResults['Final Plan']}</p>
+            </div>
+          </div>
+        </section>
       )}
-    </section>
+
+      {/* Agents Grid with Results */}
+      <section className="agents-grid-section">
+        <div className="container">
+          <div className="section-header">
+            <h2>{campaignResults ? 'Agent Analysis' : 'Agent Capabilities'}</h2>
+            <p>{campaignResults ? 'See what each agent contributed to your campaign' : 'Each agent brings unique expertise to your marketing campaigns'}</p>
+          </div>
+          
+          <div className="agents-grid">
+            {agents.map((agent) => (
+              <AgentCard 
+                key={agent.id} 
+                agent={agent} 
+                hasResults={!!campaignResults}
+                isProcessing={isProcessing}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Collaboration Timeline - UPDATE THIS SECTION */}
+<section className="collaboration-section">
+  <div className="container">
+    <div className="section-header">
+      <h2>Agent Collaboration Workflow</h2>
+      <p>See how our agents work together seamlessly</p>
+    </div>
+    <AgentCollaborationTimeline 
+      campaignResults={campaignResults} 
+      isProcessing={isProcessing}
+    />
+  </div>
+</section>
+
+
+      {/* Stats Overview */}
+      {!campaignResults && (
+        <section className="stats-section">
+          <div className="container">
+            <div className="stats-grid">
+              <div className="stat-card">
+                <h3>150+</h3>
+                <p>Campaigns Created</p>
+              </div>
+              <div className="stat-card">
+                <h3>$2.5M+</h3>
+                <p>Budget Managed</p>
+              </div>
+              <div className="stat-card">
+                <h3>10,000+</h3>
+                <p>Products Tracked</p>
+              </div>
+              <div className="stat-card">
+                <h3>98.5%</h3>
+                <p>Average Accuracy</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
   );
-}
+};
+
+export default AgentSection;

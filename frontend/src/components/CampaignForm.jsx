@@ -2,203 +2,374 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { runCampaign } from "../api";
 import { motion } from "framer-motion";
-
+import "./CampaignForm.css";
 export default function CampaignForm() {
-  const [query, setQuery] = useState("");
-  const [product, setProduct] = useState("");
+  const [formData, setFormData] = useState({
+    query: "",
+    product: "",
+    targetAudience: "",
+    budget: "",
+    timeline: ""
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [currentStep, setCurrentStep] = useState(1);
   const navigate = useNavigate();
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setError("");
+  };
+
+  const handleNext = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.query.trim() || !formData.product.trim()) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
     setLoading(true);
     setError("");
+    
     try {
-      const results = await runCampaign(query, product);
-      navigate("/agents", { state: { results, query, product } });
+      const results = await runCampaign(formData.query, formData.product);
+      navigate("/agents", { 
+        state: { 
+          results, 
+          query: formData.query, 
+          product: formData.product,
+          formData 
+        } 
+      });
     } catch (err) {
-      setError("Failed to get results. Please try again.");
+      setError("Failed to process campaign. Please try again.");
     }
+    
     setLoading(false);
   };
 
+  const campaignTypes = [
+    { id: 'product-launch', name: 'Product Launch', icon: '🚀', desc: 'Introduce new products to market' },
+    { id: 'seasonal-sale', name: 'Seasonal Sale', icon: '🎉', desc: 'Holiday and seasonal promotions' },
+    { id: 'brand-awareness', name: 'Brand Awareness', icon: '📢', desc: 'Build brand recognition' },
+    { id: 'customer-retention', name: 'Customer Retention', icon: '❤️', desc: 'Engage existing customers' },
+    { id: 'lead-generation', name: 'Lead Generation', icon: '🎯', desc: 'Acquire new prospects' },
+    { id: 'custom', name: 'Custom Campaign', icon: '⚡', desc: 'Tailored strategy' }
+  ];
+
+  const budgetRanges = [
+    { value: '1000-5000', label: '$1,000 - $5,000', desc: 'Small campaigns' },
+    { value: '5000-25000', label: '$5,000 - $25,000', desc: 'Medium campaigns' },
+    { value: '25000-100000', label: '$25,000 - $100,000', desc: 'Large campaigns' },
+    { value: '100000+', label: '$100,000+', desc: 'Enterprise campaigns' }
+  ];
+
+  const timeframes = [
+    { value: '1-week', label: '1 Week', desc: 'Quick campaigns' },
+    { value: '2-4-weeks', label: '2-4 Weeks', desc: 'Standard duration' },
+    { value: '1-3-months', label: '1-3 Months', desc: 'Extended campaigns' },
+    { value: '3-months+', label: '3+ Months', desc: 'Long-term strategy' }
+  ];
+
   return (
-    <section
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#12152e",
-        padding: "3rem 1rem",
-      }}
-    >
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        style={{
-          background: "rgba(255, 255, 255, 0.07)",
-          borderRadius: "24px",
-          padding: "3rem 3.5rem",
-          width: "100%",
-          maxWidth: 460,
-          backdropFilter: "blur(22px)",
-          boxShadow: "0 8px 48px rgba(124, 58, 237, 0.25)",
-          border: "1.5px solid rgba(124, 58, 237, 0.3)",
-          color: "#e1e6f9",
-          fontFamily: "'Inter', sans-serif",
-          userSelect: "none",
-        }}
-      >
-        <h2
-          style={{
-            fontFamily: "'Lexend', 'Inter', sans-serif",
-            fontWeight: 900,
-            fontSize: "2.5rem",
-            marginBottom: "1.8rem",
-            background:
-              "linear-gradient(90deg, #7c3aed 0%, #06b6d4 80%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            textAlign: "center",
-          }}
-        >
-          Plan Your Campaign
-        </h2>
-
-        <div style={{ position: "relative", marginBottom: "2rem" }}>
-          <input
-            id="campaign-input"
-            type="text"
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "1.2rem 1.4rem",
-              borderRadius: "14px",
-              border: "1.5px solid rgba(255,255,255,0.2)",
-              outline: "none",
-              background: "rgba(255, 255, 255, 0.08)",
-              color: "#fff",
-              fontSize: "1.15rem",
-              transition: "all 0.3s ease",
-              boxShadow: "inset 0 0 5px rgba(124, 58, 237, 0.4)",
-            }}
-            onFocus={(e) =>
-              (e.target.style.border = "1.5px solid #7c3aed")}
-            onBlur={(e) =>
-              (e.target.style.border = "1.5px solid rgba(255,255,255,0.2)")}
-            placeholder=" "
-          />
-          <label
-            htmlFor="campaign-input"
-            style={{
-              position: "absolute",
-              top: 14,
-              left: 14,
-              fontSize: "0.9rem",
-              color: "rgba(255, 255, 255, 0.5)",
-              pointerEvents: "none",
-              transition: "all 0.3s ease",
-              fontWeight: 600,
-              userSelect: "none",
-            }}
+    <div className="campaign-page">
+      {/* Header */}
+      <div className="campaign-header">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="header-content"
           >
-            Campaign request
-          </label>
+            <h1 className="page-title">Create Your Campaign</h1>
+            <p className="page-subtitle">
+              Let our AI agents collaborate to build the perfect marketing strategy for your needs
+            </p>
+          </motion.div>
         </div>
+      </div>
 
-        <div style={{ position: "relative", marginBottom: "2.5rem" }}>
-          <input
-            id="product-input"
-            type="text"
-            value={product}
-            onChange={(e) => setProduct(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "1.2rem 1.4rem",
-              borderRadius: "14px",
-              border: "1.5px solid rgba(255,255,255,0.2)",
-              outline: "none",
-              background: "rgba(255, 255, 255, 0.08)",
-              color: "#fff",
-              fontSize: "1.15rem",
-              transition: "all 0.3s ease",
-              boxShadow: "inset 0 0 5px rgba(6, 182, 212, 0.4)",
-            }}
-            onFocus={(e) =>
-              (e.target.style.border = "1.5px solid #06b6d4")}
-            onBlur={(e) =>
-              (e.target.style.border = "1.5px solid rgba(255,255,255,0.2)")}
-            placeholder=" "
-          />
-          <label
-            htmlFor="product-input"
-            style={{
-              position: "absolute",
-              top: 14,
-              left: 14,
-              fontSize: "0.9rem",
-              color: "rgba(255, 255, 255, 0.5)",
-              pointerEvents: "none",
-              transition: "all 0.3s ease",
-              fontWeight: 600,
-              userSelect: "none",
-            }}
-          >
-            Product name
-          </label>
-        </div>
-
-        <motion.button
-          type="submit"
-          style={{
-            padding: "1.2rem 2rem",
-            borderRadius: "28px",
-            fontWeight: "700",
-            fontSize: "1.2rem",
-            color: "#fff",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-            background:
-              loading
-                ? "linear-gradient(90deg,#7c3aed99,#06b6d499)"
-                : "linear-gradient(90deg,#7c3aed,#06b6d4)",
-            boxShadow: loading
-              ? "0 0 12px #7c3aed99, 0 0 24px #06b6d499"
-              : "0 0 24px #7c3aed, 0 0 48px #06b6d4",
-            transition: "all 0.3s ease",
-            userSelect: "none",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          whileHover={{ scale: loading ? 1 : 1.05, boxShadow: "0 0 32px #7c3aed" }}
-          whileTap={{ scale: loading ? 1 : 0.95 }}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Submit"}
-        </motion.button>
-
-        {error && (
-          <div
-            style={{
-              marginTop: "1rem",
-              fontWeight: "600",
-              color: "#ff6584",
-              textAlign: "center",
-            }}
-          >
-            {error}
+      {/* Progress Bar */}
+<div className="progress-section">
+  <div className="container">
+    <div className="progress-container">
+      <div className="progress-bar">
+        {[1, 2, 3].map((step) => (
+          <div key={step} className={`progress-step ${currentStep >= step ? 'active' : ''}`}>
+            <div className="step-circle">{step}</div>
+            <span className="step-label">
+              {step === 1 ? 'Campaign Type' : step === 2 ? 'Details' : 'Review & Submit'}
+            </span>
           </div>
-        )}
-      </motion.form>
-    </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      {/* Main Form */}
+      <div className="form-section">
+        <div className="container">
+          <motion.form
+            onSubmit={handleSubmit}
+            className="campaign-form"
+            key={currentStep}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {/* Step 1: Campaign Type */}
+            {currentStep === 1 && (
+              <div className="form-step">
+                <h2 className="step-title">What type of campaign do you want to create?</h2>
+                <div className="campaign-types-grid">
+                  {campaignTypes.map((type) => (
+                    <motion.div
+                      key={type.id}
+                      className={`campaign-type-card ${formData.query.includes(type.name) ? 'selected' : ''}`}
+                      onClick={() => handleInputChange('query', `${type.name} campaign for ${formData.product || 'our product'}`)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="type-icon">{type.icon}</div>
+                      <h3 className="type-name">{type.name}</h3>
+                      <p className="type-desc">{type.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                <div className="custom-query-section">
+                  <label htmlFor="custom-query" className="form-label">
+                    Or describe your custom campaign:
+                  </label>
+                  <textarea
+                    id="custom-query"
+                    className="form-textarea"
+                    placeholder="Describe your marketing campaign goals, target audience, and key objectives..."
+                    value={formData.query}
+                    onChange={(e) => handleInputChange('query', e.target.value)}
+                    rows={4}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Campaign Details */}
+            {currentStep === 2 && (
+              <div className="form-step">
+                <h2 className="step-title">Tell us about your product and preferences</h2>
+                
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="product" className="form-label required">
+                      Product/Service Name
+                    </label>
+                    <input
+                      id="product"
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g., Premium Wireless Headphones"
+                      value={formData.product}
+                      onChange={(e) => handleInputChange('product', e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="audience" className="form-label">
+                      Target Audience
+                    </label>
+                    <input
+                      id="audience"
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g., Tech enthusiasts aged 25-35"
+                      value={formData.targetAudience}
+                      onChange={(e) => handleInputChange('targetAudience', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label className="form-label">Budget Range</label>
+                    <div className="option-grid">
+                      {budgetRanges.map((range) => (
+                        <div
+                          key={range.value}
+                          className={`option-card ${formData.budget === range.value ? 'selected' : ''}`}
+                          onClick={() => handleInputChange('budget', range.value)}
+                        >
+                          <div className="option-label">{range.label}</div>
+                          <div className="option-desc">{range.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Campaign Duration</label>
+                    <div className="option-grid">
+                      {timeframes.map((time) => (
+                        <div
+                          key={time.value}
+                          className={`option-card ${formData.timeline === time.value ? 'selected' : ''}`}
+                          onClick={() => handleInputChange('timeline', time.value)}
+                        >
+                          <div className="option-label">{time.label}</div>
+                          <div className="option-desc">{time.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Review & Submit */}
+            {currentStep === 3 && (
+              <div className="form-step">
+                <h2 className="step-title">Review Your Campaign Details</h2>
+                
+                <div className="review-card">
+                  <div className="review-section">
+                    <h3>Campaign Description</h3>
+                    <p>{formData.query || 'No campaign description provided'}</p>
+                  </div>
+
+                  <div className="review-section">
+                    <h3>Product/Service</h3>
+                    <p>{formData.product || 'No product specified'}</p>
+                  </div>
+
+                  {formData.targetAudience && (
+                    <div className="review-section">
+                      <h3>Target Audience</h3>
+                      <p>{formData.targetAudience}</p>
+                    </div>
+                  )}
+
+                  <div className="review-grid">
+                    {formData.budget && (
+                      <div className="review-item">
+                        <span className="review-label">Budget:</span>
+                        <span className="review-value">
+                          {budgetRanges.find(b => b.value === formData.budget)?.label}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {formData.timeline && (
+                      <div className="review-item">
+                        <span className="review-label">Duration:</span>
+                        <span className="review-value">
+                          {timeframes.find(t => t.value === formData.timeline)?.label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="ai-preview">
+                  <h3>🤖 What happens next?</h3>
+                  <div className="ai-steps">
+                    <div className="ai-step">
+                      <span className="ai-icon">🎨</span>
+                      <span>Creative Agent analyzes your campaign requirements</span>
+                    </div>
+                    <div className="ai-step">
+                      <span className="ai-icon">💰</span>
+                      <span>Finance Agent validates budget and ROI projections</span>
+                    </div>
+                    <div className="ai-step">
+                      <span className="ai-icon">📦</span>
+                      <span>Inventory Agent checks product availability</span>
+                    </div>
+                    <div className="ai-step">
+                      <span className="ai-icon">🎯</span>
+                      <span>All agents collaborate to create your final strategy</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Form Actions */}
+            <div className="form-actions">
+              {currentStep > 1 && (
+                <motion.button
+                  type="button"
+                  onClick={handleBack}
+                  className="btn btn-secondary"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={loading}
+                >
+                  Back
+                </motion.button>
+              )}
+
+              {currentStep < 3 ? (
+                <motion.button
+                  type="button"
+                  onClick={handleNext}
+                  className="btn btn-primary"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={!formData.query.trim() || (currentStep === 2 && !formData.product.trim())}
+                >
+                  Next Step
+                </motion.button>
+              ) : (
+                <motion.button
+                  type="submit"
+                  className="btn btn-success"
+                  whileHover={{ scale: loading ? 1 : 1.02 }}
+                  whileTap={{ scale: loading ? 1 : 0.98 }}
+                  disabled={loading || !formData.query.trim() || !formData.product.trim()}
+                >
+                  {loading ? (
+                    <>
+                      <span className="loading-spinner"></span>
+                      Processing Campaign...
+                    </>
+                  ) : (
+                    <>
+                      <span className="btn-icon">🚀</span>
+                      Launch Campaign Analysis
+                    </>
+                  )}
+                </motion.button>
+              )}
+            </div>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="error-message"
+              >
+                {error}
+              </motion.div>
+            )}
+          </motion.form>
+        </div>
+      </div>
+    </div>
   );
 }

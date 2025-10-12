@@ -1,151 +1,129 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React from 'react';
 
-const timelineSteps = [
-  {
-    key: "Creative",
-    label: "Creative Agent",
-    color: "#7c3aed",
-    description: "Proposing creative campaign content and design ideas."
-  },
-  {
-    key: "Finance",
-    label: "Finance Agent",
-    color: "#06b6d4",
-    description: "Validating financial feasibility and budgeting constraints."
-  },
-  {
-    key: "Inventory",
-    label: "Inventory Agent",
-    color: "#ff61a6",
-    description: "Checking product availability and stock levels."
-  },
-  {
-    key: "Negotiation",
-    label: "Agent Negotiation",
-    color: "#ff8c00",
-    description:
-      "Agents collaboratively debating and adjusting plan parameters."
-  },
-  {
-    key: "Final",
-    label: "Final Campaign Plan",
-    color: "#00ffab",
-    description: "Presenting the final, optimized campaign plan and summary."
-  }
-];
+const AgentCollaborationTimeline = ({ campaignResults, isProcessing = false }) => {
+  const timelineSteps = [
+    {
+      id: 'creative',
+      name: 'Creative Agent',
+      icon: '🎨',
+      color: '#7c3aed',
+      description: 'Analyzing campaign strategy and creative approach...',
+      result: campaignResults?.Creative,
+      status: campaignResults?.Creative ? 'completed' : (isProcessing ? 'processing' : 'pending')
+    },
+    {
+      id: 'finance',
+      name: 'Finance Agent',
+      icon: '💰',
+      color: '#06b6d4',
+      description: 'Validating budget and financial feasibility...',
+      result: campaignResults?.Finance,
+      status: campaignResults?.Finance ? 'completed' : (isProcessing ? 'processing' : 'pending')
+    },
+    {
+      id: 'inventory',
+      name: 'Inventory Agent',
+      icon: '📦',
+      color: '#10b981',
+      description: 'Checking product availability and stock levels...',
+      result: campaignResults?.Inventory,
+      status: campaignResults?.Inventory ? 'completed' : (isProcessing ? 'processing' : 'pending')
+    },
+    {
+      id: 'negotiation',
+      name: 'Agent Negotiation',
+      icon: '🤝',
+      color: '#f59e0b',
+      description: 'Agents collaborating to finalize campaign details...',
+      result: campaignResults ? 'Agents successfully collaborated and reached consensus' : null,
+      status: campaignResults ? 'completed' : (isProcessing ? 'processing' : 'pending')
+    },
+    {
+      id: 'final',
+      name: 'Final Campaign Plan',
+      icon: '🎯',
+      color: '#10b981',
+      description: 'Generating comprehensive campaign strategy...',
+      result: campaignResults?.['Final Plan'],
+      status: campaignResults?.['Final Plan'] ? 'completed' : (isProcessing ? 'processing' : 'pending')
+    }
+  ];
 
-export default function AgentCollaborationTimeline({ results }) {
-  const [expandedStep, setExpandedStep] = useState(null);
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'completed':
+        return '✅';
+      case 'processing':
+        return '⏳';
+      default:
+        return '⏸️';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'completed':
+        return 'Completed';
+      case 'processing':
+        return 'Processing...';
+      default:
+        return 'Waiting';
+    }
+  };
 
   return (
-    <section
-      style={{
-        maxWidth: 700,
-        margin: "3rem auto",
-        padding: "0 1rem",
-        fontFamily: "'Inter', sans-serif",
-        color: "#e1e6f9",
-      }}
-    >
-      <h2
-        style={{
-          textAlign: "center",
-          fontWeight: 900,
-          fontSize: "2rem",
-          marginBottom: "2rem",
-          background:
-            "linear-gradient(90deg, #7c3aed 0%, #06b6d4 80%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          userSelect: "none"
-        }}
-      >
-        Agent Collaboration Timeline
-      </h2>
-
-      <div style={{ position: "relative", paddingLeft: 24, borderLeft: "3px solid #7c3aed7a" }}>
-        {timelineSteps.map(({ key, label, color, description }, index) => {
-          const isActive = results && results[key];
-          const isExpanded = expandedStep === index;
-
-          return (
-            <motion.div
-              key={key}
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.16, duration: 0.6 }}
-              style={{ marginBottom: 32, cursor: "pointer" }}
-              onClick={() => setExpandedStep(isExpanded ? null : index)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setExpandedStep(isExpanded ? null : index);
-                }
-              }}
-              aria-expanded={isExpanded}
-              aria-controls={`${key}-details`}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  paddingLeft: 36,
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 700,
-                  fontSize: "1.15rem",
-                  color: isActive ? color : "#5a5f78",
-                  userSelect: "none",
-                  textShadow: isActive ? `0 0 12px ${color}` : "none"
+    <div className="timeline-container">
+      <h2 className="timeline-title">Agent Collaboration Timeline</h2>
+      
+      <div className="timeline">
+        {timelineSteps.map((step, index) => (
+          <div key={step.id} className={`timeline-step ${step.status}`}>
+            <div className="timeline-marker">
+              <div 
+                className="timeline-icon"
+                style={{ 
+                  backgroundColor: step.status === 'completed' ? step.color : 'transparent',
+                  border: `2px solid ${step.color}`
                 }}
               >
-                <motion.div
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    width: 20,
-                    height: 20,
-                    borderRadius: "50%",
-                    backgroundColor: color,
-                    boxShadow: isActive
-                      ? `0 0 12px ${color}, 0 0 24px ${color}77`
-                      : "none",
-                  }}
-                  animate={{ scale: isActive ? 1.3 : 1 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                />
-                {label} {isActive ? "✅" : "⏳"}
+                {step.status === 'completed' ? '✓' : step.icon}
               </div>
-
-              {isExpanded && (
-                <motion.div
-                  id={`${key}-details`}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  style={{
-                    marginTop: 10,
-                    backgroundColor: "rgba(124, 58, 237, 0.1)",
-                    padding: "12px 18px",
-                    borderRadius: 12,
-                    fontSize: "0.94rem",
-                    userSelect: "text",
-                  }}
-                >
-                  <p style={{ margin: 0, color: "#cfcfff" }}>
-                    {description}
-                  </p>
-                  <p style={{ color: "#aaaaaa", marginTop: 6 }}>
-                    <strong>Result:</strong>{" "}
-                    {results ? results[key] : "No data available."}
-                  </p>
-                </motion.div>
+              {index < timelineSteps.length - 1 && (
+                <div 
+                  className={`timeline-line ${step.status === 'completed' ? 'completed' : ''}`}
+                  style={{ '--line-color': step.color }}
+                />
               )}
-            </motion.div>
-          );
-        })}
+            </div>
+            
+            <div className="timeline-content">
+              <div className="timeline-header">
+                <h3 className="timeline-step-name">{step.name}</h3>
+                <div className="timeline-status">
+                  <span className="status-icon">{getStatusIcon(step.status)}</span>
+                  <span className="status-text">{getStatusText(step.status)}</span>
+                </div>
+              </div>
+              
+              <p className="timeline-description">{step.description}</p>
+              
+              {step.result && (
+                <div className="timeline-result">
+                  <strong>Result:</strong> {step.result}
+                </div>
+              )}
+              
+              {!step.result && step.status === 'pending' && (
+                <div className="timeline-waiting">
+                  <em>Waiting for previous steps to complete...</em>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default AgentCollaborationTimeline;
