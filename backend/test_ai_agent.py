@@ -24,7 +24,7 @@ def test_creative_agent():
         print("-" * 30)
         
         try:
-            result = creative_agent(query)
+            result = creative_agent(query, query) # Assuming product is the same as query for testing purposes
             print(f"🎯 Response: {result}")
         except Exception as e:
             print(f"❌ Error: {e}")

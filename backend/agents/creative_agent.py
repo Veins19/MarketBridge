@@ -1,9 +1,12 @@
 import os
-import google.generativeai as genai
 from dotenv import load_dotenv
+import google.generativeai as genai # Import statement moved to the top
+from google.generativeai.client import configure
+from google.generativeai.generative_models import GenerativeModel
+
 
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def creative_agent(query, product):
     system_prompt = (
@@ -18,7 +21,7 @@ def creative_agent(query, product):
         "Be brief and actionable."
     )
     try:
-        model = genai.GenerativeModel('gemini-2.5-pro')
+        model = GenerativeModel('gemini-2.5-pro')
         response = model.generate_content(f"{system_prompt}\n\n{user_prompt}")
         ai_suggestion = response.text.strip()
         return f"Creative Agent (Gemini): {ai_suggestion}"
