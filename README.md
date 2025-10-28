@@ -234,7 +234,5 @@ This project is licensed under the **MIT License**, allowing free use, modificat
 | Backend   | Python (Flask/FastAPI) with multi-agent logic |
 | AI Engine | Google Generative AI (Gemini API)             |
 | Design    | Clean, minimal interface                      |
-| License   | MIT                                           |
-| Team      | Veins19                                       |
 
 ---
