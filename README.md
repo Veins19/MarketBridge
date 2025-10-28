@@ -224,14 +224,6 @@ This project is licensed under the **MIT License**, allowing free use, modificat
 
 ---
 
-## Credits
-
-Developed by **Team Veins19**
-
-* UI/UX design inspired by [Quiccle.com](https://quiccle.com)
-* AI functionality powered by **Google Generative AI SDK**
-
----
 
 ## Summary
 
