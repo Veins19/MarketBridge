@@ -38,7 +38,7 @@ Marketing campaign planning typically requires coordination between multiple dep
   Allows users to test scenarios such as discount variations or budget changes.
 
 * **Modern UI/UX**
-  A clean, minimal interface inspired by the design style of [Quiccle.com](https://quiccle.com).
+  A clean, minimal interface design style.
 
 * **Interactive Dashboards**
   Displays agent interactions, campaign projections, and overall performance.
