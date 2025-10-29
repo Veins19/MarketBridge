@@ -89,7 +89,8 @@ Marketing campaign planning typically requires coordination between multiple dep
 1. Move to the backend directory and create a virtual environment:
 
    ```bash
-   cd ../backend
+   cd ..
+   /backend
    python3 -m venv venv
    source venv/bin/activate
    ```
@@ -137,7 +138,7 @@ MarketBridge/
 │   ├── src/
 │   │   ├── components/     # UI components
 │   │   ├── pages/          # Pages such as Home, Dashboard
-│   │   ├── styles/         # Global CSS and Tailwind styling
+│   │   ├── styles/         # Global CSS 
 │   │   ├── App.jsx         # Main app routes
 │   │   └── main.jsx        # Vite entry file
 │   └── package.json
@@ -230,7 +231,7 @@ This project is licensed under the **MIT License**, allowing free use, modificat
 | Category  | Description                                   |
 | --------- | --------------------------------------------- |
 | Purpose   | AI-driven marketing campaign automation       |
-| Frontend  | React + Vite + Tailwind + Framer Motion       |
+| Frontend  | React + Vite + Framer Motion       |
 | Backend   | Python (Flask/FastAPI) with multi-agent logic |
 | AI Engine | Google Generative AI (Gemini API)             |
 | Design    | Clean, minimal interface                      |
