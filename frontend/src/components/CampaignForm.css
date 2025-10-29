@@ -653,4 +653,91 @@
   .progress-bar {
     max-width: 250px;
   }
+  /* Loading Button Styles */
+.btn-submit {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-submit.loading {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-submit.loading:hover {
+  transform: none;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+.loading-text {
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+
+.btn-submit:not(.loading) .btn-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Loading States */
+.btn-submit.loading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  from { left: -100%; }
+  to { left: 100%; }
+}
+/* Loading Button Styles - ADD TO END OF FILE */
+.btn-submit.loading {
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+.loading-text {
+  color: rgba(255,255,255,0.9);
+}
+
+.btn-icon {
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 }

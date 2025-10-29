@@ -40,30 +40,36 @@ export default function CampaignForm() {
     setError("Please fill in all required fields.");
     return;
   }
-  
+
   setLoading(true);
-  setError('');
+  setError("");
   
   try {
-    console.log('🤖 Starting campaign analysis...');
-    const results = await runCampaign(formData.query, formData.product);
-    
-    console.log('✅ Campaign results received:', results);
-    
-    // Navigate to results page with the data
-    navigate('/agents', { 
+    // Navigate to agents page immediately to show loading
+    navigate("/agents", { 
       state: { 
-        results,
         query: formData.query, 
-        product: formData.product, 
-        formData 
+        product: formData.product,
+        isLoading: true
       } 
     });
-    
-  } catch (err) {
-    console.error('❌ Campaign failed:', err);
-    setError(err.response?.data?.error || err.message || "Failed to process campaign. Please try again.");
-  } finally {
+
+    // Your existing runCampaign call
+    const results = await runCampaign(formData.query, formData.product);
+
+    // Navigate with results when complete
+    navigate("/agents", { 
+      state: { 
+        results, 
+        query: formData.query, 
+        product: formData.product,
+        isLoading: false
+      } 
+    });
+
+  } catch (error) {
+    console.error("Campaign submission error:", error);
+    setError(error.response?.data?.error || error.message || "Failed to generate campaign");
     setLoading(false);
   }
 };
@@ -356,25 +362,25 @@ export default function CampaignForm() {
                   Next Step
                 </motion.button>
               ) : (
-                <motion.button
-                  type="submit"
-                  className="btn btn-success"
-                  whileHover={{ scale: loading ? 1 : 1.02 }}
-                  whileTap={{ scale: loading ? 1 : 0.98 }}
-                  disabled={loading || !formData.query.trim() || !formData.product.trim()}
-                >
-                  {loading ? (
-                    <>
-                      <span className="loading-spinner"></span>
-                      Processing Campaign...
-                    </>
-                  ) : (
-                    <>
-                      <span className="btn-icon">🚀</span>
-                      Launch Campaign Analysis
-                    </>
-                  )}
-                </motion.button>
+                // Find your current submit button and replace it with:
+              <button 
+                type="submit" 
+                disabled={loading}
+                className={`btn btn-primary btn-submit ${loading ? 'loading' : ''}`}
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    <span className="loading-text">Analyzing Campaign...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="btn-icon">🚀</span>
+                    Generate Campaign
+                  </>
+                )}
+              </button>
+
               )}
             </div>
 

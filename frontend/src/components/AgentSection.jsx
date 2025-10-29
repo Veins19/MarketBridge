@@ -1,53 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AgentCard from './AgentCard';
-import AgentCollaborationTimeline from './AgentCollaborationTimeline';
+import SkeletonLoader from './SkeletonLoader';
+import ProgressBar from './ProgressBar';
 import './AgentSection.css';
 import CampaignExecutionPlan from './CampaignExecutionPlan';
+import LoadingBar from './LoadingBar';
 
 const AgentSection = () => {
   const location = useLocation();
   const [campaignResults, setCampaignResults] = useState(null);
   const [campaignQuery, setCampaignQuery] = useState('');
   const [campaignProduct, setCampaignProduct] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentProgress, setCurrentProgress] = useState({ step: 0, agent: '', status: '' });
 
-  // Get campaign results from navigation state (when coming from CampaignForm)
   useEffect(() => {
     console.log('🔍 AgentSection received location.state:', location.state);
     
-    if (location.state?.results) {
+    if (location.state?.isLoading) {
+      // Show loading state
+      setIsLoading(true);
+      setCampaignQuery(location.state.query || '');
+      setCampaignProduct(location.state.product || '');
+      setCurrentProgress(location.state.progress || { step: 1, agent: 'Creative Agent', status: 'Starting analysis...' });
+    } else if (location.state?.results) {
+      // Show results
       console.log('📊 Campaign results structure:', location.state.results);
       console.log('📊 Campaign results keys:', Object.keys(location.state.results));
-      
       setCampaignResults(location.state.results);
       setCampaignQuery(location.state.query || '');
       setCampaignProduct(location.state.product || '');
-      setIsProcessing(false);
+      setIsLoading(false);
     } else {
       console.log('⚠️ No results found in location.state');
+      setIsLoading(false);
     }
   }, [location.state]);
-
-  
 
   const agents = [
     {
       id: 'creative',
       name: 'Creative Agent',
       role: 'Campaign Strategy',
-      description: 'Generates innovative marketing campaigns with targeted discount strategies and customer segmentation.',
+      description: 'Develops focused campaign themes with targeted messaging and channel selection.',
       capabilities: [
-        'Campaign ideation and strategy',
-        'Customer segmentation analysis',
-        'Discount and promotion planning',
-        'Creative content suggestions',
-        'Market trend analysis'
+        'Campaign theme development',
+        'Target audience analysis', 
+        'Channel optimization',
+        'Conversion forecasting'
       ],
       icon: '🎨',
       color: '#7c3aed',
       stats: {
-        'Campaigns Created': '150+',
+        'Campaigns': '150+',
         'Success Rate': '94%',
         'Avg. ROI': '340%'
       },
@@ -55,147 +61,126 @@ const AgentSection = () => {
     },
     {
       id: 'finance',
-      name: 'Finance Agent',
-      role: 'Budget Validation',
-      description: 'Validates campaign budgets against available funds and ensures financial feasibility of marketing initiatives.',
+      name: 'Finance Agent', 
+      role: 'Budget Analysis',
+      description: 'Validates budgets and provides ROI projections for campaign feasibility.',
       capabilities: [
-        'Budget analysis and validation',
-        'Cost-effectiveness evaluation',
-        'Financial risk assessment',
-        'ROI projections',
-        'Spending optimization'
+        'Budget validation',
+        'ROI analysis',
+        'Risk assessment', 
+        'Cost optimization'
       ],
       icon: '💰',
       color: '#06b6d4',
       stats: {
-        'Budget Approved': '$2.5M+',
+        'Budget Managed': '$2.5M+',
         'Cost Savings': '23%',
-        'Accuracy Rate': '99.8%'
+        'Accuracy': '99.8%'
       },
       result: campaignResults?.Finance
     },
     {
       id: 'inventory',
       name: 'Inventory Agent',
-      role: 'Stock Management',
-      description: 'Monitors product availability across regions and ensures campaigns align with inventory levels.',
+      role: 'Stock Management', 
+      description: 'Ensures adequate product availability and supply chain readiness.',
       capabilities: [
-        'Real-time inventory tracking',
-        'Regional availability analysis',
-        'Stock level optimization',
+        'Stock verification',
         'Demand forecasting',
-        'Supply chain coordination'
+        'Supply chain analysis',
+        'Risk mitigation'
       ],
       icon: '📦',
       color: '#10b981',
       stats: {
-        'Products Tracked': '10,000+',
-        'Regions Covered': '25',
+        'Products': '10K+',
+        'Regions': '25',
         'Accuracy': '98.5%'
       },
       result: campaignResults?.Inventory
+    },
+    {
+      id: 'lead',
+      name: 'Lead Agent',
+      role: 'Campaign Coordination',
+      description: 'Master coordinator that resolves conflicts and creates unified campaign plans.',
+      capabilities: [
+        'Agent coordination',
+        'Conflict resolution', 
+        'Final plan creation',
+        'Go/no-go decisions'
+      ],
+      icon: '🎯',
+      color: '#f59e0b',
+      stats: {
+        'Coordination': '500+',
+        'Accuracy': '97%',
+        'Success Rate': '96%'
+      },
+      result: campaignResults?.Lead
     }
   ];
 
   return (
-    <div className="agents-page">
-      {/* Hero Section */}
-      <section className="agents-hero">
-        <div className="container">
-          <div className="hero-content">
-            <h1 className="hero-title">
-              {campaignResults ? 'Campaign Results Ready!' : 'Meet Your AI Marketing Team'}
-            </h1>
-            <p className="hero-subtitle">
-              {campaignResults 
-                ? `Campaign analysis completed for "${campaignQuery}" targeting "${campaignProduct}"` 
-                : 'Three specialized agents working together to create, validate, and execute your marketing campaigns with precision and intelligence.'
-              }
-            </p>
+    <div className="agent-section">
+      <div className="container">
+        <div className="agent-section-header">
+          <h2 className="agent-section-title">
+            {campaignResults ? 
+              `Campaign analysis completed for "${campaignQuery}" targeting "${campaignProduct}"` : 
+              isLoading ?
+              `Analyzing "${campaignQuery}" for ${campaignProduct}` :
+              'Four specialized agents working together to create, validate, and execute your marketing campaigns with precision.'
+            }
+          </h2>
+          <p className="agent-section-subtitle">
+            {campaignResults ? 
+              'See what each agent contributed to your campaign' : 
+              isLoading ?
+              'Our AI agents are analyzing your campaign requirements' :
+              'Each agent brings unique expertise, with the Lead Agent coordinating everything'
+            }
+          </p>
+        </div>
+
+        {/* Show Progress Bar when loading */}
+        {isLoading && (
+  <LoadingBar query={campaignQuery} product={campaignProduct} />
+)}
+
+        <div className="agents-grid">
+          {agents.map((agent, index) => (
+            isLoading ? (
+              <SkeletonLoader key={agent.id} agent={agent} index={index} />
+            ) : (
+              <AgentCard key={agent.id} agent={agent} index={index} />
+            )
+          ))}
+        </div>
+
+        <div className="agent-stats">
+          <div className="stat-item">
+            <div className="stat-number">500+</div>
+            <div className="stat-label">Campaigns Created</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">$5M+</div>
+            <div className="stat-label">Budget Managed</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">10K+</div>
+            <div className="stat-label">Products Tracked</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-number">97%</div>
+            <div className="stat-label">Coordination Rate</div>
           </div>
         </div>
-      </section>
 
-      {/* Campaign Results Section */}
-      {campaignResults && (
-        <section className="campaign-results-section">
-          <div className="container">
-            <div className="results-header">
-              <h2>Campaign Analysis Results</h2>
-              <div className="campaign-meta">
-                <span className="meta-item">Query: <strong>{campaignQuery}</strong></span>
-                <span className="meta-item">Product: <strong>{campaignProduct}</strong></span>
-                <span className="meta-item">Status: <span className="status-success">✓ Complete</span></span>
-              </div>
-            </div>
-
-                        {/* Beautiful Campaign Execution Plan Component */}
-            <CampaignExecutionPlan campaignResults={campaignResults} />
-
-          </div>
-        </section>
-      )}
-
-      {/* Agents Grid with Results */}
-      <section className="agents-grid-section">
-        <div className="container">
-          <div className="section-header">
-            <h2>{campaignResults ? 'Agent Analysis' : 'Agent Capabilities'}</h2>
-            <p>{campaignResults ? 'See what each agent contributed to your campaign' : 'Each agent brings unique expertise to your marketing campaigns'}</p>
-          </div>
-          
-          <div className="agents-grid">
-            {agents.map((agent) => (
-              <AgentCard 
-                key={agent.id} 
-                agent={agent} 
-                hasResults={!!campaignResults}
-                isProcessing={isProcessing}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Collaboration Timeline */}
-      <section className="collaboration-section">
-        <div className="container">
-          <div className="section-header">
-            <h2>Agent Collaboration Workflow</h2>
-            <p>See how our agents work together seamlessly</p>
-          </div>
-          <AgentCollaborationTimeline 
-            campaignResults={campaignResults} 
-            isProcessing={isProcessing}
-          />
-        </div>
-      </section>
-
-      {/* Stats Overview */}
-      {!campaignResults && (
-        <section className="stats-section">
-          <div className="container">
-            <div className="stats-grid">
-              <div className="stat-card">
-                <h3>500+</h3>
-                <p>Campaigns Created</p>
-              </div>
-              <div className="stat-card">
-                <h3>$10M+</h3>
-                <p>Budget Managed</p>
-              </div>
-              <div className="stat-card">
-                <h3>50K+</h3>
-                <p>Products Tracked</p>
-              </div>
-              <div className="stat-card">
-                <h3>98.5%</h3>
-                <p>Average Accuracy</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+        {campaignResults && !isLoading && (
+          <CampaignExecutionPlan campaignData={campaignResults} />
+        )}
+      </div>
     </div>
   );
 };
