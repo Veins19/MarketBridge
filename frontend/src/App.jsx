@@ -4,6 +4,7 @@ import AgentSection from "./components/AgentSection.jsx";
 import Footer from "./components/Footer.jsx";
 import CampaignForm from "./components/CampaignForm.jsx";
 import Header from "./components/Header.jsx";
+import WhatIfScenario from "./components/WhatIfScenario.jsx";  // ADD THIS IMPORT
 import { Routes, Route } from "react-router-dom";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/" element={<Hero />} />
           <Route path="/campaign" element={<CampaignForm />} />
           <Route path="/agents" element={<AgentSection />} />
+          <Route path="/what-if" element={<WhatIfScenario />} />  {/* ADD THIS ROUTE */}
         </Routes>
       </div>
       <Footer />

@@ -1,5 +1,0 @@
-[
-  {"id": 1, "name": "Rohit", "age": 25, "region": "South", "interests": ["electronics", "gaming"], "purchase_frequency": "high"},
-  {"id": 2, "name": "Ananya", "age": 30, "region": "North", "interests": ["fashion", "beauty"], "purchase_frequency": "medium"},
-  {"id": 3, "name": "Vikram", "age": 40, "region": "East", "interests": ["sports", "fitness"], "purchase_frequency": "low"}
-]

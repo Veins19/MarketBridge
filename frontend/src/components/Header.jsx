@@ -92,10 +92,12 @@ export default function Header() {
   const location = useLocation();
 
   const navigationLinks = [
-    { to: "/", label: "Home", icon: "🏠" },
-    { to: "/campaign", label: "Campaign", icon: "🚀" },
-    { to: "/agents", label: "Agents", icon: "🤖" },
-  ];
+  { to: "/", label: "Home", icon: "🏠" },
+  { to: "/campaign", label: "Campaign", icon: "🚀" },
+  { to: "/agents", label: "Agents", icon: "🤖" },
+  { to: "/what-if", label: "What-If", icon: "🧮" },  // ADD THIS LINE
+];
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -175,7 +177,7 @@ export default function Header() {
         </div>
 
         {/* Progress Bar for Campaign/Agents pages */}
-        {(location.pathname === '/campaign' || location.pathname === '/agents') && (
+        {(location.pathname === '/campaign' || location.pathname === '/agents' || location.pathname === '/what-if') && (
           <div className="header-progress">
             <motion.div
               initial={{ width: 0 }}
