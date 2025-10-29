@@ -92,10 +92,12 @@ export default function Header() {
   const location = useLocation();
 
   const navigationLinks = [
-    { to: "/", label: "Home", icon: "🏠" },
-    { to: "/campaign", label: "Campaign", icon: "🚀" },
-    { to: "/agents", label: "Agents", icon: "🤖" },
-  ];
+  { to: "/", label: "Home", icon: "🏡" },
+  { to: "/campaign", label: "Campaign", icon: "🚀" },
+  { to: "/agents", label: "Agents", icon: "🤖" },
+  { to: "/what-if", label: "What-If", icon: "🧮" },    // <--- NEW LINE
+];
+
 
   useEffect(() => {
     const handleScroll = () => {

@@ -5,6 +5,10 @@ import Footer from "./components/Footer.jsx";
 import CampaignForm from "./components/CampaignForm.jsx";
 import Header from "./components/Header.jsx";
 import { Routes, Route } from "react-router-dom";
+import WhatIfScenario from './WhatIfScenario.jsx';
+import './App.css';
+
+  
 
 export default function App() {
   return (
@@ -12,10 +16,16 @@ export default function App() {
       <Header />
       <div style={{ flex: 1 }}>
         <Routes>
-          <Route path="/" element={<Hero />} />
-          <Route path="/campaign" element={<CampaignForm />} />
-          <Route path="/agents" element={<AgentSection />} />
-        </Routes>
+  <Route path="/" element={
+    <>      <Hero />
+      
+    </>
+  } />
+  <Route path="/campaign" element={<CampaignForm />} />
+  <Route path="/agents" element={<AgentSection />} />
+  <Route path="/what-if" element={<WhatIfScenario />} />
+
+</Routes>
       </div>
       <Footer />
     </div>

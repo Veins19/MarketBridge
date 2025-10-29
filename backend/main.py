@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
-from agent_manager import run_agents
+from scenario_generator import generate_scenarios
+from fastapi.middleware.cors import CORSMiddleware   # <-- NEW
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,11 +14,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class CampaignRequest(BaseModel):
-    query: str
-    product: str
+class WhatIfRequest(BaseModel):
+    discount: float
+    duration: int
+    target_size: int
+    budget: int
 
-@app.post("/run_campaign")
-def run_campaign(request: CampaignRequest):
-    results = run_agents(request.query, request.product)
-    return results
+@app.post("/api/what_if")
+async def what_if(request: WhatIfRequest):
+    scenarios = generate_scenarios(
+        request.discount, 
+        request.duration, 
+        request.target_size, 
+        request.budget
+    )
+    return {"scenarios": scenarios}
+
