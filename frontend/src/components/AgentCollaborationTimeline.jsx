@@ -1,4 +1,5 @@
 import React from 'react';
+import './AgentCollaborationTimeline.css';
 
 const AgentCollaborationTimeline = ({ campaignResults, isProcessing = false }) => {
   const timelineSteps = [
@@ -28,94 +29,98 @@ const AgentCollaborationTimeline = ({ campaignResults, isProcessing = false }) =
       description: 'Checking product availability and stock levels...',
       result: campaignResults?.Inventory,
       status: campaignResults?.Inventory ? 'completed' : (isProcessing ? 'processing' : 'pending')
-    },
-    {
-      id: 'negotiation',
-      name: 'Agent Negotiation',
-      icon: '🤝',
-      color: '#f59e0b',
-      description: 'Agents collaborating to finalize campaign details...',
-      result: campaignResults ? 'Agents successfully collaborated and reached consensus' : null,
-      status: campaignResults ? 'completed' : (isProcessing ? 'processing' : 'pending')
-    },
-    {
-      id: 'final',
-      name: 'Final Campaign Plan',
-      icon: '🎯',
-      color: '#10b981',
-      description: 'Generating comprehensive campaign strategy...',
-      result: campaignResults?.['Final Plan'],
-      status: campaignResults?.['Final Plan'] ? 'completed' : (isProcessing ? 'processing' : 'pending')
     }
   ];
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed':
-        return '✅';
-      case 'processing':
-        return '⏳';
-      default:
-        return '⏸️';
+      case 'completed': return '✅';
+      case 'processing': return '⏳';
+      default: return '⏸️';
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'completed':
-        return 'Completed';
-      case 'processing':
-        return 'Processing...';
-      default:
-        return 'Waiting';
+      case 'completed': return 'COMPLETED';
+      case 'processing': return 'PROCESSING...';
+      default: return 'WAITING';
     }
   };
 
-  return (
-    <div className="timeline-container">
-      <h2 className="timeline-title">Agent Collaboration Timeline</h2>
+  const formatResult = (result) => {
+    if (!result) return null;
+    
+    // Split into sections based on emojis and headers
+    const sections = result.split(/(?=🎨|💰|📦|✅|⚠️|❌)/);
+    
+    return sections.map((section, index) => {
+      if (!section.trim()) return null;
       
-      <div className="timeline">
+      const lines = section.trim().split('\n').filter(line => line.trim());
+      const firstLine = lines[0];
+      const content = lines.slice(1).join('\n');
+      
+      // Check if it's a header section
+      if (firstLine.includes('BREAKDOWN') || firstLine.includes('ANALYSIS') || firstLine.includes('METRICS')) {
+        return (
+          <div key={index} className="result-section">
+            <div className="result-header">{firstLine}</div>
+            <div className="result-content">{content}</div>
+          </div>
+        );
+      }
+      
+      return (
+        <div key={index} className="result-text">
+          {section.trim()}
+        </div>
+      );
+    });
+  };
+
+  return (
+    <div className="agent-collaboration-timeline">
+      <div className="timeline-header">
+        <h2 className="timeline-title">Agent Collaboration Timeline</h2>
+      </div>
+      
+      <div className="timeline-container">
         {timelineSteps.map((step, index) => (
-          <div key={step.id} className={`timeline-step ${step.status}`}>
-            <div className="timeline-marker">
-              <div 
-                className="timeline-icon"
-                style={{ 
-                  backgroundColor: step.status === 'completed' ? step.color : 'transparent',
-                  border: `2px solid ${step.color}`
-                }}
-              >
-                {step.status === 'completed' ? '✓' : step.icon}
-              </div>
-              {index < timelineSteps.length - 1 && (
-                <div 
-                  className={`timeline-line ${step.status === 'completed' ? 'completed' : ''}`}
-                  style={{ '--line-color': step.color }}
-                />
-              )}
-            </div>
+          <div key={step.id} className="timeline-step">
+            {/* Connection Line */}
+            {index < timelineSteps.length - 1 && (
+              <div className="timeline-connector" style={{'--step-color': step.color}}></div>
+            )}
             
-            <div className="timeline-content">
-              <div className="timeline-header">
-                <h3 className="timeline-step-name">{step.name}</h3>
-                <div className="timeline-status">
-                  <span className="status-icon">{getStatusIcon(step.status)}</span>
-                  <span className="status-text">{getStatusText(step.status)}</span>
+            {/* Step Content */}
+            <div className="step-content" style={{'--step-color': step.color}}>
+              {/* Step Header */}
+              <div className="step-header">
+                <div className="step-icon-wrapper">
+                  <span className="step-icon">{step.icon}</span>
+                </div>
+                <div className="step-info">
+                  <h3 className="step-name">{step.name}</h3>
+                  <div className="step-status">
+                    <span className="status-icon">{getStatusIcon(step.status)}</span>
+                    <span className="status-text">{getStatusText(step.status)}</span>
+                  </div>
                 </div>
               </div>
               
-              <p className="timeline-description">{step.description}</p>
+              {/* Step Description */}
+              <div className="step-description">
+                {step.description}
+              </div>
               
+              {/* Step Result */}
               {step.result && (
-                <div className="timeline-result">
-                  <strong>Result:</strong> {step.result}
-                </div>
-              )}
-              
-              {!step.result && step.status === 'pending' && (
-                <div className="timeline-waiting">
-                  <em>Waiting for previous steps to complete...</em>
+                <div className="step-result">
+                  <div className="result-label">Result:</div>
+                  <div className="result-details">
+                    {formatResult(step.result)}
+                  </div>
                 </div>
               )}
             </div>

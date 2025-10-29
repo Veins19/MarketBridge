@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import AgentCard from './AgentCard';
 import AgentCollaborationTimeline from './AgentCollaborationTimeline';
 import './AgentSection.css';
+import CampaignExecutionPlan from './CampaignExecutionPlan';
 
 const AgentSection = () => {
   const location = useLocation();
@@ -13,13 +14,22 @@ const AgentSection = () => {
 
   // Get campaign results from navigation state (when coming from CampaignForm)
   useEffect(() => {
+    console.log('🔍 AgentSection received location.state:', location.state);
+    
     if (location.state?.results) {
+      console.log('📊 Campaign results structure:', location.state.results);
+      console.log('📊 Campaign results keys:', Object.keys(location.state.results));
+      
       setCampaignResults(location.state.results);
       setCampaignQuery(location.state.query || '');
       setCampaignProduct(location.state.product || '');
       setIsProcessing(false);
+    } else {
+      console.log('⚠️ No results found in location.state');
     }
   }, [location.state]);
+
+  
 
   const agents = [
     {
@@ -119,11 +129,9 @@ const AgentSection = () => {
               </div>
             </div>
 
-            {/* Final Plan Card */}
-            <div className="final-plan-card">
-              <h3>🎯 Final Marketing Plan</h3>
-              <p className="final-plan-text">{campaignResults['Final Plan']}</p>
-            </div>
+                        {/* Beautiful Campaign Execution Plan Component */}
+            <CampaignExecutionPlan campaignResults={campaignResults} />
+
           </div>
         </section>
       )}
@@ -149,20 +157,19 @@ const AgentSection = () => {
         </div>
       </section>
 
-      {/* Collaboration Timeline - UPDATE THIS SECTION */}
-<section className="collaboration-section">
-  <div className="container">
-    <div className="section-header">
-      <h2>Agent Collaboration Workflow</h2>
-      <p>See how our agents work together seamlessly</p>
-    </div>
-    <AgentCollaborationTimeline 
-      campaignResults={campaignResults} 
-      isProcessing={isProcessing}
-    />
-  </div>
-</section>
-
+      {/* Collaboration Timeline */}
+      <section className="collaboration-section">
+        <div className="container">
+          <div className="section-header">
+            <h2>Agent Collaboration Workflow</h2>
+            <p>See how our agents work together seamlessly</p>
+          </div>
+          <AgentCollaborationTimeline 
+            campaignResults={campaignResults} 
+            isProcessing={isProcessing}
+          />
+        </div>
+      </section>
 
       {/* Stats Overview */}
       {!campaignResults && (
@@ -170,15 +177,15 @@ const AgentSection = () => {
           <div className="container">
             <div className="stats-grid">
               <div className="stat-card">
-                <h3>150+</h3>
+                <h3>500+</h3>
                 <p>Campaigns Created</p>
               </div>
               <div className="stat-card">
-                <h3>$2.5M+</h3>
+                <h3>$10M+</h3>
                 <p>Budget Managed</p>
               </div>
               <div className="stat-card">
-                <h3>10,000+</h3>
+                <h3>50K+</h3>
                 <p>Products Tracked</p>
               </div>
               <div className="stat-card">
