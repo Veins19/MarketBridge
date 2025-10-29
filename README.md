@@ -49,7 +49,7 @@ Marketing campaign planning typically requires coordination between multiple dep
 
 | Layer         | Technologies                                |
 | ------------- | ------------------------------------------- |
-| Frontend      | React 18, Vite, Tailwind CSS, Framer Motion |
+| Frontend      | React 18, Vite, Framer Motion               |
 | Backend       | Python 3, Flask or FastAPI                  |
 | AI / LLM      | Google Generative AI (Gemini API)           |
 | Data Handling | Retrieval-Augmented Generation (RAG)        |
