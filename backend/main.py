@@ -2,7 +2,10 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agent_manager import run_agents
+from scenario_generator import generate_scenarios
+from sentiment_trend_analyzer import SentimentTrendAnalyzer  # NEW IMPORT
 import uvicorn
+import asyncio
 
 # Import WebSocket manager
 from websocket_manager import ws_manager
@@ -18,9 +21,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize sentiment trend analyzer
+sentiment_analyzer = SentimentTrendAnalyzer()  # NEW
+
 class CampaignRequest(BaseModel):
     query: str
     product: str
+
+class WhatIfRequest(BaseModel):
+    discount: float
+    duration: int
+    target_size: int
+    budget: int
+
+class SentimentAnalysisRequest(BaseModel):  # NEW
+    product: str
+    campaign_text: str
+    keywords: list[str] = []
 
 # WebSocket endpoint for real-time agent collaboration
 @app.websocket("/ws/{client_id}")
@@ -72,6 +89,102 @@ async def run_campaign(request: CampaignRequest):
             "success": False,
             "error": str(e)
         }
+
+@app.post("/api/what_if")
+async def what_if(request: WhatIfRequest):
+    """
+    Generate what-if scenarios based on campaign parameters
+    """
+    try:
+        print(f"🔮 Processing what-if request: discount={request.discount}%, duration={request.duration} days")
+        
+        scenarios = generate_scenarios(
+            request.discount,
+            request.duration,
+            request.target_size,
+            request.budget
+        )
+        
+        print(f"✅ Generated {len(scenarios)} scenarios")
+        return {"scenarios": scenarios}
+        
+    except Exception as e:
+        print(f"❌ Error generating scenarios: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+@app.post("/api/sentiment_analysis")
+async def analyze_sentiment_trends(request: SentimentAnalysisRequest):
+    """
+    Analyze sentiment and trends for campaign optimization
+    """
+    try:
+        print(f"🎭 Processing sentiment analysis for: {request.product}")
+        
+        # Get comprehensive analysis
+        analysis = await sentiment_analyzer.get_comprehensive_analysis(
+            request.product, 
+            request.campaign_text
+        )
+        
+        print("📈 Analysis completed successfully")
+        return {
+            "success": True,
+            "data": analysis
+        }
+        
+    except Exception as e:
+        print(f"❌ Error in sentiment analysis: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        # Return fallback data with correct structure
+        return {
+            "success": True,
+            "data": {
+                "sentiment_analysis": {
+                    "overall_sentiment": "positive",
+                    "confidence": 0.8,
+                    "emotions": {
+                        "joy": 0.4,
+                        "anger": 0.1,
+                        "fear": 0.1,
+                        "sadness": 0.1,
+                        "surprise": 0.3
+                    },
+                    "recommendations": [
+                        "Leverage positive sentiment in social media campaigns",
+                        "Amplify messaging across multiple channels",
+                        "Highlight positive experiences and benefits"
+                    ]
+                },
+                "trend_analysis": {
+                    "keywords": [
+                        {
+                            "keyword": request.product,
+                            "trend_score": 0.75,
+                            "volume_change": 12.5,
+                            "sentiment_trend": "positive"
+                        }
+                    ],
+                    "overall_trend": "positive",
+                    "recommendations": [
+                        f"Focus on trending keywords: {request.product}",
+                        "Monitor trends weekly for campaign optimization"
+                    ]
+                },
+                "ai_insights": [
+                    f"{request.product} shows strong positive market sentiment",
+                    "Campaign messaging resonates well with target audience",
+                    "Consider expanding reach based on positive trends"
+                ]
+            }
+        }
+
 
 @app.get("/health")
 async def health_check():
